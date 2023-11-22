@@ -34,11 +34,11 @@ int main(int argc, char **argv) {
     DataType *deviceInput2;
     DataType *deviceOutput;
 
+    double startTime, endTime;
+
     //@@ Insert code below to read in inputLength from args
     inputLength = atoi(argv[1]);
     printf("The input length is %d\n", inputLength);
-    
-    double startTime = getTime();
 
     //@@ Insert code below to allocate Host memory for input and output
     hostInput1 = (DataType *) malloc(inputLength * sizeof(DataType));
@@ -58,25 +58,31 @@ int main(int argc, char **argv) {
     cudaMalloc(&deviceInput2, inputLength * sizeof(DataType));
     cudaMalloc(&deviceOutput, inputLength * sizeof(DataType));
 
+    startTime = getTime();
     //@@ Insert code to below to Copy memory to the GPU here
     cudaMemcpy(deviceInput1, hostInput1, inputLength * sizeof(DataType), cudaMemcpyHostToDevice);
     cudaMemcpy(deviceInput2, hostInput2, inputLength * sizeof(DataType), cudaMemcpyHostToDevice);
     cudaDeviceSynchronize();
+    endTime = getTime();
+    printf("Data copy to GPU: %.6lf ms.\n", (endTime - startTime) * 1000);
 
     //@@ Initialize the 1D grid and block dimensions here
     int Block_dim = ThreadNum;
     int Grid_dim = inputLength / ThreadNum + 1;
 
+    startTime = getTime();
     //@@ Launch the GPU Kernel here
     vecAdd<<<Grid_dim, Block_dim>>>(deviceInput1, deviceInput2, deviceOutput, inputLength);
     cudaDeviceSynchronize();
+    endTime = getTime();
+    printf("CUDA kernel: %.6lf ms.\n", (endTime - startTime) * 1000);
 
+    startTime = getTime();
     //@@ Copy the GPU memory back to the CPU here
     cudaMemcpy(hostOutput, deviceOutput, inputLength * sizeof(DataType), cudaMemcpyDeviceToHost);
     cudaDeviceSynchronize();
-    
-    double endTime = getTime();
-    printf("Program execution time: %.3lf ms.\n", (endTime - startTime) * 1000);
+    endTime = getTime();
+    printf("Data copy to host: %.6lf ms.\n", (endTime - startTime) * 1000);
 
     //@@ Insert code below to compare the output with the reference
     bool flag = true;
