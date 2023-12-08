@@ -124,15 +124,16 @@ int main(int argc, char **argv) {
     printf("\n");
 
     //@@ Insert code below to compare the output with the reference
-    int diff_cnt = 0;
+    bool is_match = true;
     for (unsigned int i = 0; i < NUM_BINS; i++) {
         if (resultRef[i] != hostBins[i]) {
             printf("%d, %d\n", resultRef[i], hostBins[i]);
-            diff_cnt ++;
+            is_match = false;
+            //break;
         }
     }
-    if (diff_cnt > 0) {
-        printf("Mismatch detected: %d\n", diff_cnt);
+    if (!is_match) {
+        printf("Mismatch detected!\n");
     }
     else {
         printf("Calculation match!\n");
