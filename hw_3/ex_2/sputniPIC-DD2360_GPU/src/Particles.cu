@@ -411,19 +411,19 @@ void mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* gr
     cudaMemcpy(deviceGrid, grd, sizeof(grid), cudaMemcpyHostToDevice);
     cudaMemcpy(deviceParam, param, sizeof(parameters), cudaMemcpyHostToDevice);
 
-    
     grid = (part->nop + block -1)/block;
+    dim3 gridCuda(grid);
+    dim3 blockCuda(block);
 
-
-    mover<<<grid,block>>>(devicePart, deviceField, deviceGrid, deviceParam);
+    mover<<<gridCuda,blockCuda>>>(devicePart, deviceField, deviceGrid, deviceParam);
     cudaDeviceSynchronize();
 
     cudaMemcpy(part, devicePart, sizeof(particles)*param->ns, cudaMemcpyDeviceToHost);
 
-    cudaFree(&devicePart);
-    cudaFree(&deviceField);
-    cudaFree(&deviceGrid);
-    cudaFree(&deviceParam);
+    cudaFree(devicePart);
+    cudaFree(deviceField);
+    cudaFree(deviceGrid);
+    cudaFree(deviceParam);
 }
 
 
