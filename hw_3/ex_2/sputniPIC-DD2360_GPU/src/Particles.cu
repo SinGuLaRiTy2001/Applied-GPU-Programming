@@ -399,8 +399,8 @@ void mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* gr
     EMfield *deviceField;
     grid *deviceGrid;
     parameters *deviceParam;
-    int blockSize = 2048;
-    int gridSize = 0;
+    int block = 2048;
+    int grid = 0;
 
     cudaMalloc(&devicePart, sizeof(particles));
     cudaMalloc(&deviceField, sizeof(EMfield));
@@ -412,10 +412,10 @@ void mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* gr
     cudaMemcpy(deviceParam, param, sizeof(parameters), cudaMemcpyHostToDevice);
 
     
-    gridSize = (blockSize + part->nop -1)/blockSize;
+    grid = (block + part->nop -1)/block;
 
 
-    mover<<<gridSize,blockSize>>>(devicePart, deviceField, deviceGrid, deviceParam);
+    mover<<<grid,block>>>(devicePart, deviceField, deviceGrid, deviceParam);
     cudaDeviceSynchronize();
 
     cudaMemcpy(part, devicePart, sizeof(particles)*param->ns, cudaMemcpyDeviceToHost);
