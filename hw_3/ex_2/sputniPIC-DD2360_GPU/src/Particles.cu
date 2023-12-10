@@ -383,15 +383,11 @@ __global__ void mover(struct particles* part, struct EMfield* field, struct grid
                         part->z[i] = -part->z[i];
                     }
                 }
-            
-                //printf("hej %d", part->x[i]);
-                                                             
-            
-
-            
             }  // end of subcycling
-    }
-}
+    } // end of one particle
+
+    // exit succcesfully
+} // end of the mover
 
 /** launch the GPU*/
 void mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param)
@@ -403,25 +399,25 @@ void mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* gr
     EMfield *deviceField;
     grid *deviceGrid;
     parameters *deviceParam;
+    int blockSize = 2048;
+    int gridSize = 0;
 
     cudaMalloc(&devicePart, sizeof(particles));
     cudaMalloc(&deviceField, sizeof(EMfield));
     cudaMalloc(&deviceGrid, sizeof(grid));
     cudaMalloc(&deviceParam, sizeof(parameters));
-
     cudaMemcpy(devicePart, part, sizeof(particles), cudaMemcpyHostToDevice);
     cudaMemcpy(deviceField, field, sizeof(EMfield), cudaMemcpyHostToDevice);
     cudaMemcpy(deviceGrid, grd, sizeof(grid), cudaMemcpyHostToDevice);
     cudaMemcpy(deviceParam, param, sizeof(parameters), cudaMemcpyHostToDevice);
 
-    int blockSize = 2048;
-    int gridSize = (blockSize + part->nop -1)/blockSize;
+    
+    gridSize = (blockSize + part->nop -1)/blockSize;
 
 
     mover<<<gridSize,blockSize>>>(devicePart, deviceField, deviceGrid, deviceParam);
     cudaDeviceSynchronize();
 
-    //only changes particle
     cudaMemcpy(part, devicePart, sizeof(particles)*param->ns, cudaMemcpyDeviceToHost);
 
     cudaFree(&devicePart);
