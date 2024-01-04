@@ -1,4 +1,7 @@
 # DD2360HT23
-Course assignments for DD2360 Applied GPU Programming.
 
-Group members: Jian Wen, Heng Kang
+Course Deliverables for DD2360 Applied GPU Programming.
+
+Homework group members: Jian Wen, Heng Kang
+
+Project group members: Jian Wen, Heng Kang, Yuxiang Mao
