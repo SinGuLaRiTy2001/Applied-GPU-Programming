@@ -203,10 +203,10 @@ int main(int argc, char *argv[])
     /*printf("%d,%d\n",size,time_total);
     fprintf(stderr,"%d,%d\n",size,time_total);*/
 
-    free(m);
-    free(a);
-    free(b);
-    free(finalVec);
+    cudaFree(m);
+    cudaFree(a);
+    cudaFree(b);
+    // free(finalVec);
 
     cudaStreamDestroy(stream1);
     cudaStreamDestroy(stream2);
