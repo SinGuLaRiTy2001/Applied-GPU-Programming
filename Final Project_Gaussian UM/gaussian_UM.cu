@@ -191,10 +191,10 @@ int main(int argc, char *argv[])
     /*printf("%d,%d\n",size,time_total);
     fprintf(stderr,"%d,%d\n",size,time_total);*/
 
-    free(m);
-    free(a);
-    free(b);
-    free(finalVec);
+    cudaFree(m);
+    cudaFree(a);
+    cudaFree(b);
+    // cudaFree(finalVec);
 }
 /*------------------------------------------------------
  ** PrintDeviceProperties
@@ -335,7 +335,7 @@ void ForwardSub() {
     // cudaMallocManaged((void **) &m_cuda, Size * Size * sizeof(float));
     // cudaMallocManaged((void **) &a_cuda, Size * Size * sizeof(float));
     // cudaMallocManaged((void **) &b_cuda, Size * sizeof(float));
-    
+
     int block_size,grid_size;
 
     block_size = MAXBLOCKSIZE;
